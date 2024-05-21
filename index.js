@@ -6,15 +6,10 @@ import config from './config.js';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-// import clientRouter from './routers/clientRouter'
-// import designRouter from './routers/designRouter'
-// import stockRouter from './routers/stockRouter'
-// import invoiceRouter from './routers/invoiceRouter'
-// const cors = require('cors');
+
 
 import userRouter from './routers/userRouter.js'
 
-// const bodyParser = require('body-parser');
 
 const mongodbUrl = config.MONGODB_URL;
 
@@ -46,6 +41,9 @@ app.use(function (req, res, next) {
   app.use(bodyParser.json());
   app.get("/", (req, res) => {
     res.send("Welcome to a basic express App");
+  });
+  app.get("/test", (req, res) => {
+    res.send("Welcome to a test express App");
   });
 //     // app.use('/api/products', productRouter);
   app.use('/api/users', userRouter);
