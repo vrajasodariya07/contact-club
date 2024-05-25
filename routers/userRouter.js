@@ -12,9 +12,12 @@ router.get('/',isAuth, async (req, res) => {
   try {
     const userlist = await User.find()
     if (userlist) {
-      res.send(
-        userlist
-      );
+      const userListDataWithLoggedInUser = {
+        userList: userlist,
+        loggedInUser: req.user
+      };
+      
+      res.send(userListDataWithLoggedInUser);
       return;
     }
     res.status(401).send({ message: 'Invalid Email or Password.' });
@@ -158,22 +161,22 @@ router.put('/updateuser',isAuth, async (req, res) => {
 
     if (user) {
       // Update fields if new values are provided, otherwise keep existing values
-      user.givenName = req.body.givenName || user.givenName;
-      user.middleName = req.body.middleName || user.middleName;
-      user.lastName = req.body.lastName || user.lastName;
+      user.givenName =  user.isAdmin? req.body.givenName || user.givenName : user.givenName;
+      user.middleName = user.isAdmin? req.body.middleName || user.middleName: user.middleName;
+      user.lastName = user.isAdmin? req.body.lastName || user.lastName:user.lastName;
       user.community = req.body.community || user.community;
       user.currentcity = req.body.currentcity || user.currentcity;
-      user.native = req.body.native || user.native;
-      user.gender = req.body.gender || user.gender;
-      user.maritalStatus = req.body.maritalStatus || user.maritalStatus;
-      user.birthDate = req.body.birthDate || user.birthDate;
-      user.email = req.body.email || user.email;
-      user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
+      user.native = user.isAdmin? req.body.native || user.native:user.native;
+      user.gender = user.isAdmin? req.body.gender || user.gender:user.gender;
+      user.maritalStatus =  req.body.maritalStatus || user.maritalStatus ;
+      user.birthDate = user.isAdmin?req.body.birthDate || user.birthDate:user.birthDate;
+      user.email = user.isAdmin?req.body.email || user.email:user.email;
+      user.phoneNumber = user.isAdmin?req.body.phoneNumber || user.phoneNumber:user.phoneNumber;
       user.occupation = req.body.occupation || user.occupation;
       user.password = req.body.password ? bcrypt.hashSync(req.body.password, 8) : user.password; // Rehash password if provided
       user.isAdmin = false;
-      user.isActive = req.body.isActive !== undefined ? req.body.isActive : user.isActive;
-      user.isPrime = req.body.isPrime !== undefined ? req.body.isPrime : user.isPrime;
+      user.isActive =user.isAdmin? req.body.isActive !== undefined ? req.body.isActive : user.isActive :user.isActive;
+      user.isPrime = user.isAdmin? req.body.isPrime !== undefined ? req.body.isPrime : user.isPrime:user.isPrime;
       user.UpdatedAt = Date.now(); // Update the UpdatedAt timestamp
 
       const updatedUser = await user.save();

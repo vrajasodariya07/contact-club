@@ -32,7 +32,7 @@ app.use(function (req, res, next) {
     //  console.log(req.originalUrl);
     res.header("Access-Control-Allow-Origin", "*");
     res.header('Access-Control-Allow-Origin', 'http://localhost:3030');
-    res.header("Access-Control-Allow-Origin", "https://krishna-alpha.vercel.app");
+    res.header("Access-Control-Allow-Origin", "https://contactclub.vercel.app");
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header("Access-Control-Allow-Methods", "GET", "PUT", "POST", "DELETE", "OPTIONS");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-client-key, x-client-token, x-client-secret");
