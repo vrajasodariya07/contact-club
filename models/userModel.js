@@ -1,5 +1,8 @@
 
 import mongoose from 'mongoose';
+
+const allowedCommunities = ['Surat', 'Mumbai', 'Vapi', 'Vadodara', 'Ahmedabad', 'Rajkot', 'Amreli', 'Other'];
+
 const userSchema = mongoose.Schema({ 
   givenName: {
     required: true,
@@ -17,7 +20,15 @@ const userSchema = mongoose.Schema({
   },
   community: {
     type: String,
+ 
     trim: true,
+    validate: {
+      validator: function (value) {
+        // Allow either enum values or any non-empty string
+        return allowedCommunities.includes(value) || value.trim() !== '';
+      },
+      message: 'Invalid community value',
+    },
   },
   currentcity: {
     type: String,
@@ -84,7 +95,9 @@ const userSchema = mongoose.Schema({
   isPrime: {
     type: Boolean,
     default: false,
-  }
+  },
+  CreatedAt: { type: Date },
+    UpdatedAt: { type: Date },
 });
 
 const userModel = mongoose.model("User", userSchema);

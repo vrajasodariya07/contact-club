@@ -7,14 +7,31 @@ import { getToken, isAuth, isAdmin } from '../utill.js';
 
 const router = express.Router();
 
+router.get('/enum-values', (req, res) => {
+  try {
+    const genderEnum = User.schema.path('gender').enumValues;
+    const maritalStatusEnum = User.schema.path('maritalStatus').enumValues;
+    const communityEnum = User.schema.path('community').enumValues;
+
+    res.send({
+      gender: genderEnum,
+      maritalStatus: maritalStatusEnum,
+      community: ['Surat', 'Mumbai', 'Vapi', 'Vadodara', 'Ahmedabad', 'Rajkot', 'Amreli', 'Other'],
+    });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
 
 router.get('/',isAuth, async (req, res) => {
   try {
-    const userlist = await User.find()
+    const userlist = await User.find().select('-password -isAdmin');
     if (userlist) {
+      const loggedInUser = userlist.find(user => user._id.equals(req.user._id));
+
       const userListDataWithLoggedInUser = {
         userList: userlist,
-        loggedInUser: req.user
+        loggedInUser:loggedInUser
       };
       
       res.send(userListDataWithLoggedInUser);
@@ -153,7 +170,7 @@ try {
 router.put('/updateuser',isAuth, async (req, res) => {
   try {
     const { email, phoneNumber } = req.body;
-
+   
     // Find the user by email or phone number
     const user = await User.findOne({
       $or: [{ email }, { phoneNumber }]
@@ -174,11 +191,13 @@ router.put('/updateuser',isAuth, async (req, res) => {
       user.phoneNumber = user.isAdmin?req.body.phoneNumber || user.phoneNumber:user.phoneNumber;
       user.occupation = req.body.occupation || user.occupation;
       user.password = req.body.password ? bcrypt.hashSync(req.body.password, 8) : user.password; // Rehash password if provided
-      user.isAdmin = false;
+      user.isAdmin = user.isAdmin? true: false;
       user.isActive =user.isAdmin? req.body.isActive !== undefined ? req.body.isActive : user.isActive :user.isActive;
       user.isPrime = user.isAdmin? req.body.isPrime !== undefined ? req.body.isPrime : user.isPrime:user.isPrime;
       user.UpdatedAt = Date.now(); // Update the UpdatedAt timestamp
-
+      user.CreatedAt = user.CreatedAt ? user.CreatedAt :Date.now(); // Update the created time timestamp
+      
+  
       const updatedUser = await user.save();
 
       res.send({
@@ -242,6 +261,15 @@ router.delete('/:id',
 //     }
 //   }
 // );
+
+// all the data
+// User.updateMany({}, { $set: { 'CreatedAt': Date.now(), 'UpdatedAt': Date.now()} }, { upsert: false })
+// .then((result) => {
+//   console.log("Updated", result.modifiedCount, "documents.");
+// })
+// .catch((error) => {
+//   console.error("Error updating documents:", error);
+// });
 
 
 
