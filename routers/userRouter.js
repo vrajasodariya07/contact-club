@@ -26,8 +26,9 @@ router.get('/enum-values', (req, res) => {
 router.get('/', isAuth, async (req, res) => {
   try {
     const userlist = await User.find().select('-password -isAdmin');
+    const loggedInUser = await User.findById(req.user._id).select('-password');
+
     if (userlist) {
-      const loggedInUser = userlist.find(user => user._id.equals(req.user._id));
 
       const userListDataWithLoggedInUser = {
         userList: userlist,
