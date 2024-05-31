@@ -23,7 +23,7 @@ router.get('/enum-values', (req, res) => {
   }
 });
 
-router.get('/',isAuth, async (req, res) => {
+router.get('/', isAuth, async (req, res) => {
   try {
     const userlist = await User.find().select('-password -isAdmin');
     if (userlist) {
@@ -31,9 +31,9 @@ router.get('/',isAuth, async (req, res) => {
 
       const userListDataWithLoggedInUser = {
         userList: userlist,
-        loggedInUser:loggedInUser
+        loggedInUser: loggedInUser
       };
-      
+
       res.send(userListDataWithLoggedInUser);
       return;
     }
@@ -49,7 +49,8 @@ router.post('/signin', async (req, res) => {
     const { phoneNumber, password } = req.body;
 
     // Check for user by email or phone number without checking isActive
-    const signinUser = await User.findOne({phoneNumber 
+    const signinUser = await User.findOne({
+      phoneNumber
     });
 
     // If user is not found
@@ -104,73 +105,73 @@ router.post('/signin', async (req, res) => {
 
 router.post('/signup', async (req, res) => {
   console.log("signip");
-try {
-  const { givenName, middleName, lastName, community, city, native, gender, maritalStatus, birthDate, email, phoneNumber, occupation, password } = req.body;
+  try {
+    const { givenName, middleName, lastName, community, city, native, gender, maritalStatus, birthDate, email, phoneNumber, occupation, password } = req.body;
 
-  const findUser =  await User.findOne({ email });
+    const findUser = await User.findOne({ email });
 
-  if (findUser) {
-    return res.status(401).send({ message: 'Phonenumber already exists' });
-  }
+    if (findUser) {
+      return res.status(401).send({ message: 'Phonenumber already exists' });
+    }
 
-  const user = new User({
-    givenName,
-    middleName,
-    lastName,
-    community,
-    city,
-    native,
-    gender,
-    maritalStatus,
-    birthDate,
-    email,
-    phoneNumber,
-    occupation,
-    password,
-    CreatedAt: Date.now(),
-    UpdatedAt: Date.now(),
-    isAdmin: false
+    const user = new User({
+      givenName,
+      middleName,
+      lastName,
+      community,
+      city,
+      native,
+      gender,
+      maritalStatus,
+      birthDate,
+      email,
+      phoneNumber,
+      occupation,
+      password,
+      CreatedAt: Date.now(),
+      UpdatedAt: Date.now(),
+      isAdmin: false
 
-  });
-
-  const newUser = await user.save();
-
-  if (newUser) {
-    res.send({
-      _id: newUser.id,
-      givenName: newUser.givenName,
-      middleName: newUser.middleName,
-      lastName: newUser.lastName,
-      community: newUser.community,
-      city: newUser.city,
-      native: newUser.native,
-      gender: newUser.gender,
-      maritalStatus: newUser.maritalStatus,
-      birthDate: newUser.birthDate,
-      email: newUser.email,
-      phoneNumber: newUser.phoneNumber,
-      occupation: newUser.occupation,
-      CreatedAt: newUser.CreatedAt,
-      UpdatedAt: newUser.UpdatedAt,
-      isAdmin: false,
-      isActive:false,
-      isPrime:false
     });
-  } else {
-    res.status(401).send({ message: 'Invalid User Data.' });
+
+    const newUser = await user.save();
+
+    if (newUser) {
+      res.send({
+        _id: newUser.id,
+        givenName: newUser.givenName,
+        middleName: newUser.middleName,
+        lastName: newUser.lastName,
+        community: newUser.community,
+        city: newUser.city,
+        native: newUser.native,
+        gender: newUser.gender,
+        maritalStatus: newUser.maritalStatus,
+        birthDate: newUser.birthDate,
+        email: newUser.email,
+        phoneNumber: newUser.phoneNumber,
+        occupation: newUser.occupation,
+        CreatedAt: newUser.CreatedAt,
+        UpdatedAt: newUser.UpdatedAt,
+        isAdmin: false,
+        isActive: false,
+        isPrime: false
+      });
+    } else {
+      res.status(401).send({ message: 'Invalid User Data.' });
+    }
+  } catch (error) {
+    res.status(401).send({ message: error.message });
+    console.log(error);
   }
-} catch (error) {
-  res.status(401).send({ message: error.message });
-  console.log(error);
-}
 });
 
 
 
-router.put('/updateuser',isAuth, async (req, res) => {
+router.put('/updateuser', isAuth, async (req, res) => {
   try {
     const { email, phoneNumber } = req.body;
-   
+
     // Find the user by email or phone number
     const user = await User.findOne({
       $or: [{ email }, { phoneNumber }]
@@ -178,26 +179,26 @@ router.put('/updateuser',isAuth, async (req, res) => {
 
     if (user) {
       // Update fields if new values are provided, otherwise keep existing values
-      user.givenName =  user.isAdmin? req.body.givenName || user.givenName : user.givenName;
-      user.middleName = user.isAdmin? req.body.middleName || user.middleName: user.middleName;
-      user.lastName = user.isAdmin? req.body.lastName || user.lastName:user.lastName;
+      user.givenName = user.isAdmin ? req.body.givenName || user.givenName : user.givenName;
+      user.middleName = user.isAdmin ? req.body.middleName || user.middleName : user.middleName;
+      user.lastName = user.isAdmin ? req.body.lastName || user.lastName : user.lastName;
       user.community = req.body.community || user.community;
       user.currentcity = req.body.currentcity || user.currentcity;
-      user.native = user.isAdmin? req.body.native || user.native:user.native;
-      user.gender = user.isAdmin? req.body.gender || user.gender:user.gender;
-      user.maritalStatus =  req.body.maritalStatus || user.maritalStatus ;
-      user.birthDate = user.isAdmin?req.body.birthDate || user.birthDate:user.birthDate;
-      user.email = user.isAdmin?req.body.email || user.email:user.email;
-      user.phoneNumber = user.isAdmin?req.body.phoneNumber || user.phoneNumber:user.phoneNumber;
+      user.native = user.isAdmin ? req.body.native || user.native : user.native;
+      user.gender = user.isAdmin ? req.body.gender || user.gender : user.gender;
+      user.maritalStatus = req.body.maritalStatus || user.maritalStatus;
+      user.birthDate = user.isAdmin ? req.body.birthDate || user.birthDate : user.birthDate;
+      user.email = user.isAdmin ? req.body.email || user.email : user.email;
+      user.phoneNumber = user.isAdmin ? req.body.phoneNumber || user.phoneNumber : user.phoneNumber;
       user.occupation = req.body.occupation || user.occupation;
       user.password = req.body.password ? bcrypt.hashSync(req.body.password, 8) : user.password; // Rehash password if provided
-      user.isAdmin = user.isAdmin? true: false;
-      user.isActive =user.isAdmin? req.body.isActive !== undefined ? req.body.isActive : user.isActive :user.isActive;
-      user.isPrime = user.isAdmin? req.body.isPrime !== undefined ? req.body.isPrime : user.isPrime:user.isPrime;
+      user.isAdmin = user.isAdmin ? true : false;
+      user.isActive = user.isAdmin ? req.body.isActive !== undefined ? req.body.isActive : user.isActive : user.isActive;
+      user.isPrime = user.isAdmin ? req.body.isPrime !== undefined ? req.body.isPrime : user.isPrime : user.isPrime;
       user.UpdatedAt = Date.now(); // Update the UpdatedAt timestamp
-      user.CreatedAt = user.CreatedAt ? user.CreatedAt :Date.now(); // Update the created time timestamp
-      
-  
+      user.CreatedAt = user.CreatedAt ? user.CreatedAt : Date.now(); // Update the created time timestamp
+
+
       const updatedUser = await user.save();
 
       res.send({
@@ -235,7 +236,7 @@ router.delete('/:id',
   async (req, res) => {
     const user = await Client.findById(req.params.id);
     if (user) {
-      
+
       const deleteUser = await user.remove();
       res.send(deleteUser);
     } else {
@@ -243,6 +244,22 @@ router.delete('/:id',
     }
   }
 );
+
+
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await Client.findById(id);
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 
 // router.put('/:id', isAuth, isAdmin,
