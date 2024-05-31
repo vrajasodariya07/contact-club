@@ -1,26 +1,51 @@
-// const express = require("express");
-// const mongoose = require("mongoose");
-// const authRouter = require("./routers/auth");
+const express = require("express");
+const mongoose = require("mongoose");
+const authRouter = require("./routers/auth");
 
-// const PORT = process.env.PORT || 3000;
-// const app = express();
+const PORT = process.env.PORT || 3000;
+const app = express();
 
-// app.use(express.json());
-// app.use(authRouter);
+app.use(express.json());
+app.use(authRouter);
 
-// // const DB =
-// //   "mongodb+srv://denny:12345@cluster0.gy3l1.mongodb.net/";
+// const DB =
+//   "mongodb+srv://denny:12345@cluster0.gy3l1.mongodb.net/";
 
 
-// mongoose
-//   .connect(DB)
-//   .then(() => {
-//     console.log("Connection Successful");
-//   })
-//   .catch((e) => {
-//     console.log(e);
-//   });
+mongoose
+  .connect(DB)
+  .then(() => {
+    console.log("Connection Successful");
+  })
+  .catch((e) => {
+    console.log(e);
+  });
 
-// app.listen(PORT, "0.0.0.0", () => {
-//   console.log(`connected at port ${PORT}`);
-// });
+app.listen(PORT, "0.0.0.0", () => {// app.js
+const express = require("express");
+const mongoose = require("mongoose");
+const authRouter = require("./routers/auth");
+
+const PORT = process.env.PORT || 3000;
+const app = express();
+
+app.use(express.json());
+app.use(authRouter);
+
+const DB = "mongodb+srv://denny:12345@cluster0.gy3l1.mongodb.net/test";
+
+mongoose
+  .connect(DB)
+  .then(() => {
+    console.log("Connection Successful");
+  })
+  .catch((e) => {
+    console.log(e);
+  });
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`connected at port ${PORT}`);
+});
+
+  console.log(`connected at port ${PORT}`);
+});
