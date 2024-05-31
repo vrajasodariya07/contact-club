@@ -10,6 +10,7 @@ const userSchema = mongoose.Schema({
     required: true,
     type: String,
     trim: true,
+    unique: true, // Ensure email addresses are unique
     validate: {
       validator: (value) => {
         const re =
@@ -23,6 +24,19 @@ const userSchema = mongoose.Schema({
     required: true,
     type: String,
   },
+  city: {
+    type: String,
+    trim: true,
+  },
+  nativePlace: {
+    type: String,
+    trim: true,
+  },
+  maritalStatus: {
+    type: String,
+    enum: ["Single", "Married", "Divorced", "Widowed"], // Example enum values
+  },
+  // Add more fields as needed
 });
 
 const User = mongoose.model("User", userSchema);
