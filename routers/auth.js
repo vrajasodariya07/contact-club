@@ -78,7 +78,7 @@ authRouter.get("/", auth, async (req, res) => {
   res.json({ ...user._doc, token: req.token });
 });
 
-router.put("/api/users/:id", async (req, res) => {
+router.put("/api/users/{id}", async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = [
     "token",
