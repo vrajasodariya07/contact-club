@@ -48,7 +48,7 @@ router.get('/', isAuth, async (req, res) => {
 router.post('/signin', async (req, res) => {
   try {
     const { phoneNumber, password } = req.body;
-
+console.log("hello")
     // Check for user by email or phone number without checking isActive
     const signinUser = await User.findOne({
       phoneNumber
