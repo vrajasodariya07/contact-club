@@ -78,4 +78,48 @@ authRouter.get("/", auth, async (req, res) => {
   res.json({ ...user._doc, token: req.token });
 });
 
+router.put("/api/users/:id", async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = [
+    "token",
+    "firstName",
+    "fatherName",
+    "surname",
+    "occupation",
+    "email",
+    "phoneNumber",
+    "city",
+    "nativePlace",
+    "maritalStatus",
+    "community",
+    "gender",
+    "birthdate",
+    "password",
+    "isActive",
+    "isAdmin",
+    "isPrime"
+  ];
+  const isValidOperation = updates.every((update) =>
+    allowedUpdates.includes(update)
+  );
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: "Invalid updates!" });
+  }
+
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).send();
+    }
+
+    updates.forEach((update) => (user[update] = req.body[update]));
+    await user.save();
+    res.send(user);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
 module.exports = authRouter;
