@@ -78,7 +78,7 @@ authRouter.get("/", auth, async (req, res) => {
   res.json({ ...user._doc, token: req.token });
 });
 
-router.put("/api/users/{id}", async (req, res) => {
+router.put("/api/users/:id", async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = [
     "token",
@@ -111,14 +111,15 @@ router.put("/api/users/{id}", async (req, res) => {
     const user = await User.findById(req.params.id);
 
     if (!user) {
-      return res.status(404).send();
+      return res.status(404).send({error:"User not found"});
     }
 
     updates.forEach((update) => (user[update] = req.body[update]));
     await user.save();
     res.send(user);
   } catch (e) {
-    res.status(400).send(e);
+    console.error(e); 
+     res.status(500).send({ error: "Something went wrong. Please try again later." });
   }
 });
 
