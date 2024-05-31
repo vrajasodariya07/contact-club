@@ -116,7 +116,7 @@ authRouter.put("/api/users/:id", async (req, res) => {
 
     updates.forEach((update) => (user[update] = req.body[update]));
     await user.save();
-    res.send(user);
+    res.json({ msg: "User updated successfully", user });
   } catch (e) {
     console.error(e); 
      res.status(500).send({ error: "Something went wrong. Please try again later." });
