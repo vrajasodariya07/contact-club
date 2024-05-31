@@ -1,26 +1,35 @@
-// const express = require("express");
-// const mongoose = require("mongoose");
-// const authRouter = require("./routers/auth");
+// app.js
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const User = require('./models/user'); // Assuming you have a User model set up
 
-// const PORT = process.env.PORT || 3000;
-// const app = express();
+const app = express();
 
-// app.use(express.json());
-// app.use(authRouter);
+app.use(bodyParser.json());
 
-// // const DB =
-// //   "mongodb+srv://denny:12345@cluster0.gy3l1.mongodb.net/";
+mongoose.connect('mongodb://localhost:27017/yourdbname', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
+app.put('/api/users/:id', async (req, res) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
-// mongoose
-//   .connect(DB)
-//   .then(() => {
-//     console.log("Connection Successful");
-//   })
-//   .catch((e) => {
-//     console.log(e);
-//   });
+    if (!updatedUser) {
+      return res.status(404).send();
+    }
 
-// app.listen(PORT, "0.0.0.0", () => {
-//   console.log(`connected at port ${PORT}`);
-// });
+    res.send(updatedUser);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
